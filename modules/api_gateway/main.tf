@@ -21,9 +21,15 @@ resource "aws_apigatewayv2_integration" "lambda_integration" {
   integration_uri        = var.lambda_invoke_arn
 }
 
-resource "aws_apigatewayv2_route" "any_route" {
+resource "aws_apigatewayv2_route" "notes_base" {
   api_id    = aws_apigatewayv2_api.http_api.id
-  route_key = "ANY /notes"
+  route_key = "POST /notes"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda_integration.id}"
+}
+
+resource "aws_apigatewayv2_route" "notes_one" {
+  api_id    = aws_apigatewayv2_api.http_api.id
+  route_key = "ANY /notes/{id+}"
   target    = "integrations/${aws_apigatewayv2_integration.lambda_integration.id}"
 }
 

@@ -7,10 +7,10 @@ terraform {
     }
   }
   backend "s3" {
-    bucket  = "tf-state-lab4-havryliuk-volodymyr-02"
-    key     = "envs/dev/terraform.tfstate"
-    region  = "eu-central-1"
-    encrypt = true
+    bucket       = "tf-state-lab4-havryliuk-volodymyr-02"
+    key          = "envs/dev/terraform.tfstate"
+    region       = "eu-central-1"
+    encrypt      = true
     use_lockfile = true
   }
 }

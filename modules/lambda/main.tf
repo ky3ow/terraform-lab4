@@ -72,7 +72,7 @@ resource "aws_lambda_function" "api_handler" {
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   environment {
     variables = {
-      TABLE_NAME = var.dynamodb_table_name
+      TABLE_NAME  = var.dynamodb_table_name
       LOGS_BUCKET = var.logs_bucket_name
     }
   }

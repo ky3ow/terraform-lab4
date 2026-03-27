@@ -4,9 +4,9 @@ import os
 import datetime
 
 dynamodb = boto3.resource('dynamodb')
-s3 = boto3.client('s3')
+s3 = boto3.resource('s3')
 table = dynamodb.Table(os.environ['TABLE_NAME'])
-bucket_name = os.environ['LOGS_BUCKET']
+bucket = s3.Bucket(os.environ['LOGS_BUCKET'])
 
 def handler(event, context):
     method = event.get('requestContext', {}).get('http', {}).get('method')
@@ -40,8 +40,7 @@ def handler(event, context):
             return {"statusCode": 400, "body": json.dumps({"error": "Unsupported method or missing ID"})}
 
         # 3. Log to S3
-        s3.put_object(
-            Bucket=bucket_name,
+        bucket.put_object(
             Key=f"logs/{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt",
             Body=log_msg
         )

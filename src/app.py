@@ -17,6 +17,7 @@ dynamodb = boto3.resource("dynamodb")
 s3 = boto3.resource("s3")
 table = dynamodb.Table(os.environ["TABLE_NAME"])
 bucket = s3.Bucket(os.environ["LOGS_BUCKET"])
+comprehend = boto3.client("comprehend")
 
 
 @app.get("/notes/<id>")
@@ -43,6 +44,18 @@ def delete_note(id):
         "message": "Deleted",
         "id": id
     }
+
+@app.get("/notes/<id>/phrases")
+def get_phrases(id):
+    item = table.get_item(Key={"id": id}).get("Item")
+    if not item:
+        raise NotFoundError(f"Note {id} not found")
+    
+    comp_res = comprehend.detect_key_phrases(
+        Text=item.get("text", "This is a placeholder message, there is no note, sadly"),
+        LanguageCode="en"
+    )
+    return {"id": id, "phrases": comp_res.get("KeyPhrases", [])}
 
 @app.post("/notes")
 def create_note():

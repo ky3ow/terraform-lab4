@@ -29,7 +29,13 @@ resource "aws_apigatewayv2_route" "notes_base" {
 
 resource "aws_apigatewayv2_route" "notes_one" {
   api_id    = aws_apigatewayv2_api.http_api.id
-  route_key = "ANY /notes/{id+}"
+  route_key = "ANY /notes/{id}"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda_integration.id}"
+}
+
+resource "aws_apigatewayv2_route" "notes_key_phrases" {
+  api_id    = aws_apigatewayv2_api.http_api.id
+  route_key = "GET /notes/{id}/phrases"
   target    = "integrations/${aws_apigatewayv2_integration.lambda_integration.id}"
 }
 

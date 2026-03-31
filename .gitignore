@@ -4,3 +4,5 @@
 *.tfvars
 .venv
 *.zip
+
+build/

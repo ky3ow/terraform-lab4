@@ -62,6 +62,28 @@ resource "aws_iam_role_policy_attachment" "bucket_access" {
   policy_arn = aws_iam_policy.bucket_access.arn
 }
 
+resource "aws_iam_policy" "comprehend_access" {
+  name = "comprehend_access_policy"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow",
+      Action = [
+        "comprehend:DetectSentiment",
+        "comprehend:DetectEntities",
+        "comprehend:DetectKeyPhrases",
+        "comprehend:DetectDominantLanguage",
+      ]
+      Resource = "*"
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "comprehend_access" {
+  role       = aws_iam_role.lambda_exec.name
+  policy_arn = aws_iam_policy.comprehend_access.arn
+}
+
 resource "aws_lambda_function" "api_handler" {
   filename      = data.archive_file.lambda_zip.output_path
   function_name = var.function_name
